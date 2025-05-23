@@ -6,7 +6,7 @@ Hafizh Surya Mustafa Zen 2306256343
 
 ### The screenshot
 
-![Program Output](image\timer1.png)
+![Program Output](image/timer1.png)
 
 When spawner.spawn(async { ... }) is called, the async task gets added to a queue but doesn’t start right away. Meanwhile, the synchronous line println!("Brian's Komputer: hey hey"); runs immediately, so “hey hey” is printed first—before the executor even starts polling the task. The actual execution begins only after the spawner is dropped and executor.run() is called.
 
@@ -16,12 +16,12 @@ Inside the executor’s loop, the task is polled for the first time, which print
 
 ### Before Removing drop(spawner)
 
-![Before](img/dropspawner1.png)
+![Before](image/dropspawner1.png)
 
 When spawner.spawn(async { ... }) is called, the async task gets queued but doesn’t start right away. The next line, println!("Brian's Komputer: hey hey");, runs immediately and prints “hey hey”. The task only starts once the spawner is dropped and executor.run() is called. This triggers the executor to begin polling the queued tasks, resulting in the output: "hey hey" → "howdy!" → wait → "done!".
 
 ### After Removing drop(spawner)
 
-![After](img/dropspawner2.png)
+![After](image/dropspawner2.png)
 
 If you don’t explicitly drop the spawner, the behavior changes. Since the spawner holds the sending side of the channel, the executor won’t know when to stop—it keeps waiting for new tasks. This means even after queued tasks finish running and output is correctly produced, the executor hangs because the channel remains open. The tasks still run, but the program doesn’t exit on its o
